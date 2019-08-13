@@ -67,8 +67,10 @@ const cashOutAPIPersonal = {
 //     .catch(error => console.log(error,'Fail to retrieve cash out information'))
 // }
 
+calPercent = (percent, value) => (percent * value/100).toFixed(2);
+
 cashInCommission = (rules, amount)=> {
-    let fee = (rules.percents * amount/100).toFixed(2);
+    let fee = calPercent(rules.percents, amount);
     if(fee > rules.max.amount) {
         return fee = rules.max.amount.toFixed(2);
     }
@@ -76,9 +78,7 @@ cashInCommission = (rules, amount)=> {
 }
 
 cashOutCommissionLegal = (rules, amount)=> {
-    let fee = (rules.percents * amount/100).toFixed(2);
-    // console.log(rules.percent)
-    // console.log(amount)
+    let fee = calPercent(rules.percents, amount);
     if(fee < rules.min.amount) {
         return fee = rules.min.amount;
     }
@@ -106,14 +106,13 @@ naturalUserCashOutInformation = (person, userCheckOutHistory) => {
             //update amount and check if limit is not exceed
             checkOutInformationDb[person.user_id].amount = checkOutInformationDb[person.user_id].amount + person.operation.amount;
         }
-   
     } else {
     //Create new user in information name information.user+id and in it create date and amount
         userCheckOutHistory[person.user_id] = {date: new Date(person.date), amount: person.operation.amount, limit: false};
     }
 }
 
-// naturalUserCashOutInformation(testPerson, checkOutInformationDb);
+
 
 
 cashOutCommissionNatural = (rules, personInfo, person) => {
@@ -121,18 +120,13 @@ cashOutCommissionNatural = (rules, personInfo, person) => {
         if(personInfo[person.user_id].amount > 1000) {
             if(!personInfo[person.user_id].limit) {
                 personInfo[person.user_id].limit = true;
-                return  ((personInfo[person.user_id].amount - 1000)/100  * rules.percents).toFixed(2);
+                return  calPercent(rules.percents, personInfo[person.user_id].amount-1000);
             } else {
-                return (person.operation.amount/100 * rules.percents).toFixed(2);
+                return calPercent(rules.percents, person.operation.amount);
             }
         }
         return Number(0).toFixed(2);
 }
-
-//cashOutCommissionNatural(cashOutAPINatural, checkOutInformationDb, testPerson)
-
-//-------
-
 
 
 function main(val) {
