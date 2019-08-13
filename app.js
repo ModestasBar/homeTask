@@ -7,6 +7,7 @@ Output:
 
 const fetch = require('node-fetch');
 const date = require('date-and-time');
+const percentage = require('percentage-calc');
 
 const input = [
     { "date": "2016-01-05", "user_id": 1, "user_type": "natural", "type": "cash_in", "operation": { "amount": 200.00, "currency": "EUR" } },
@@ -29,7 +30,6 @@ const cashInAPI = {
 }
 
 const cashOutAPINatural = {
-
     percents: 0.3,
     week_limit: {
         amount: 1000,
@@ -68,15 +68,17 @@ const cashOutAPIPersonal = {
 // }
 
 cashInCommission = (rules, amount)=> {
-    let fee = rules.percents * amount;
+    let fee = (rules.percents * amount/100).toFixed(2);
     if(fee > rules.max.amount) {
-        return fee = rules.max.amount;
+        return fee = rules.max.amount.toFixed(2);
     }
     return fee;
 }
 
 cashOutCommissionLegal = (rules, amount)=> {
-    let fee = rules.percents * amount;
+    let fee = (rules.percents * amount/100).toFixed(2);
+    // console.log(rules.percent)
+    // console.log(amount)
     if(fee < rules.min.amount) {
         return fee = rules.min.amount;
     }
@@ -86,14 +88,7 @@ cashOutCommissionLegal = (rules, amount)=> {
 const testPerson = { "date": "2016-01-12", "user_id": 1, "user_type": "natural", "type": "cash_in", "operation": { "amount": 200.00, "currency": "EUR" } }
 
 const checkOutInformationDb = {
-    1: {
-        date: new Date("2016-01-05"),
-        amount: 210
-    },
-    2: {
-        date: new Date("2016-01-08"),
-        amount: 213
-    }
+    
 }
 
 naturalUserCashOutInformation = (person, userCheckOutHistory) => {
@@ -104,16 +99,17 @@ naturalUserCashOutInformation = (person, userCheckOutHistory) => {
         const actionAge = date.subtract(new Date(person.date), userCheckOutHistory[1].date).toDays();
         if(actionAge > oneWeek){
             //rewrite amount and date
-            checkOutInformationDb[person.user_id].amount = checkOutInformationDb[person.user_id].amount + person.operation.amount;
+            checkOutInformationDb[person.user_id].amount = person.operation.amount;
             checkOutInformationDb[person.user_id].date = new Date(person.date);
+            checkOutInformationDb[person.user_id].limit = false;
         } else {
-            //update amount
+            //update amount and check if limit is not exceed
             checkOutInformationDb[person.user_id].amount = checkOutInformationDb[person.user_id].amount + person.operation.amount;
         }
    
     } else {
     //Create new user in information name information.user+id and in it create date and amount
-        userCheckOutHistory[person.user_id] = {date: new Date(person.date), amount: person.operation.amount};
+        userCheckOutHistory[person.user_id] = {date: new Date(person.date), amount: person.operation.amount, limit: false};
     }
 }
 
@@ -123,9 +119,14 @@ naturalUserCashOutInformation = (person, userCheckOutHistory) => {
 cashOutCommissionNatural = (rules, personInfo, person) => {
         //1.Check if personInfo.user+(person+id).amount is more than 1000 euro
         if(personInfo[person.user_id].amount > 1000) {
-            return  ((personInfo[person.user_id].amount - 1000) * rules.percents);
+            if(!personInfo[person.user_id].limit) {
+                personInfo[person.user_id].limit = true;
+                return  ((personInfo[person.user_id].amount - 1000)/100  * rules.percents).toFixed(2);
+            } else {
+                return (person.operation.amount/100 * rules.percents).toFixed(2);
+            }
         }
-        return   personInfo[person.user_id].amount * rules.percents;
+        return Number(0).toFixed(2);
 }
 
 //cashOutCommissionNatural(cashOutAPINatural, checkOutInformationDb, testPerson)
@@ -135,7 +136,7 @@ cashOutCommissionNatural = (rules, personInfo, person) => {
 
 
 function main(val) {
-    const operationType = val.forEach(user=> {
+     val.forEach(user=> {
         if(user.type == 'cash_in') {
            //calculate cash in commission
             const fee = cashInCommission(cashInAPI, user.operation.amount);
@@ -156,6 +157,7 @@ function main(val) {
 }
 
 main(input);
+
 
 
 
