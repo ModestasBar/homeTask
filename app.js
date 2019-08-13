@@ -6,6 +6,7 @@ Output:
 */
 
 const fetch = require('node-fetch');
+const date = require('date-and-time');
 
 const input = [
     { "date": "2016-01-05", "user_id": 1, "user_type": "natural", "type": "cash_in", "operation": { "amount": 200.00, "currency": "EUR" } },
@@ -22,8 +23,8 @@ const input = [
 const cashInAPI = {
     percents: 0.03,
     max: {
-    amount: 5,
-    currency: "EUR"
+        amount: 5,
+        currency: "EUR"
     }
 }
 
@@ -31,16 +32,16 @@ const cashOutAPINatural = {
 
     percents: 0.3,
     week_limit: {
-    amount: 1000,
-    currency: "EUR"
+        amount: 1000,
+        currency: "EUR"
     }
 }
 
 const cashOutAPIPersonal = {
     percents: 0.3,
     min: {
-    amount: 0.5,
-    currency: "EUR"
+        amount: 0.5,
+        currency: "EUR"
     }
 }
 
@@ -81,22 +82,74 @@ cashOutCommissionLegal = (rules, amount)=> {
     }
     return fee;
 }
+//------
+const testPerson = { "date": "2016-01-12", "user_id": 1, "user_type": "natural", "type": "cash_in", "operation": { "amount": 200.00, "currency": "EUR" } }
+
+const checkOutInformationDb = {
+    1: {
+        date: new Date("2016-01-05"),
+        amount: 210
+    },
+    2: {
+        date: new Date("2016-01-08"),
+        amount: 213
+    }
+}
+
+naturalUserCashOutInformation = (person, userCheckOutHistory) => {
+    const oneWeek = 7;
+    // console.log(userCheckOutHistory[1])
+    if(userCheckOutHistory[person.user_id]){
+        //If date is older than 7 days 
+        const actionAge = date.subtract(new Date(person.date), userCheckOutHistory[1].date).toDays();
+        if(actionAge > oneWeek){
+            //rewrite amount and date
+            checkOutInformationDb[person.user_id].amount = checkOutInformationDb[person.user_id].amount + person.operation.amount;
+            checkOutInformationDb[person.user_id].date = new Date(person.date);
+        } else {
+            //update amount
+            checkOutInformationDb[person.user_id].amount = checkOutInformationDb[person.user_id].amount + person.operation.amount;
+        }
+   
+    } else {
+    //Create new user in information name information.user+id and in it create date and amount
+        userCheckOutHistory[person.user_id] = {date: new Date(person.date), amount: person.operation.amount};
+    }
+}
+
+// naturalUserCashOutInformation(testPerson, checkOutInformationDb);
+
+
+cashOutCommissionNatural = (rules, personInfo, person) => {
+        //1.Check if personInfo.user+(person+id).amount is more than 1000 euro
+        if(personInfo[person.user_id].amount > 1000) {
+            return  ((personInfo[person.user_id].amount - 1000) * rules.percents);
+        }
+        return   personInfo[person.user_id].amount * rules.percents;
+}
+
+//cashOutCommissionNatural(cashOutAPINatural, checkOutInformationDb, testPerson)
+
+//-------
+
 
 
 function main(val) {
-    const operationType = val.map(user=> {
+    const operationType = val.forEach(user=> {
         if(user.type == 'cash_in') {
            //calculate cash in commission
             const fee = cashInCommission(cashInAPI, user.operation.amount);
             console.log(fee); 
         } else {
             if(user.user_type == 'natural') {
-                //calculate cash out commissions fee when natural
-                const fee = cashOutCommissionLegal(cashOutAPIPersonal, user.operation.amount);
+                //calculate cash out commissions fee when is natural persons
+                naturalUserCashOutInformation(user, checkOutInformationDb);
+                const fee = cashOutCommissionNatural(cashOutAPINatural, checkOutInformationDb, user)
                 console.log(fee);
             } else {
-                console.log('cash out juridical');
-                //calculate cash out commissions fee when juridical
+                //calculate cash out commissions fee when is legal persons
+                const fee = cashOutCommissionLegal(cashOutAPIPersonal, user.operation.amount);
+                console.log(fee);
             }
         }
     })
