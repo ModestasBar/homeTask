@@ -5,9 +5,8 @@ Output:
     Single number according calculated commission fee.
 */
 
-const fetch = require('node-fetch');
 const date = require('date-and-time');
-const percentage = require('percentage-calc');
+const fetch = require('node-fetch');
 
 const input = [
     { "date": "2016-01-05", "user_id": 1, "user_type": "natural", "type": "cash_in", "operation": { "amount": 200.00, "currency": "EUR" } },
@@ -21,55 +20,35 @@ const input = [
     { "date": "2016-02-15", "user_id": 1, "user_type": "natural", "type": "cash_out", "operation": { "amount": 300.00, "currency": "EUR" } },
 ]
 
-const cashInAPI = {
-    percents: 0.03,
-    max: {
-        amount: 5,
-        currency: "EUR"
-    }
-}
 
-const cashOutAPINatural = {
-    percents: 0.3,
-    week_limit: {
-        amount: 1000,
-        currency: "EUR"
-    }
-}
-
-const cashOutAPIPersonal = {
-    percents: 0.3,
-    min: {
-        amount: 0.5,
-        currency: "EUR"
-    }
-}
-
-
-// function cashIn(){
-//     fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-in')
-//     .then(response => response.json())
-//     .then(data => data)
-//     .catch(error => console.log(error,'Fail to retrieve cash in information'))
+// const cashIn = {
+//     percents: 0.03,
+//     max: {
+//     amount: 5,
+//     currency: "EUR"
+//     }
 // }
 
-// function cashOutNaturalPersons() {
-//     fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-out/natural')
-//     .then(response => response.json())
-//     .then(data => console.log(data))
-//     .catch(error => console.log(error,'Fail to retrieve cash out information'))
+
+// const cashOutAPINatural = {
+//     percents: 0.3,
+//     week_limit: {
+//         amount: 1000,
+//         currency: "EUR"
+//     }
 // }
 
-// function cashOutLegalPersons() {
-//     fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-out/juridical')
-//     .then(response => response.json())
-//     .then(data => console.log(data))
-//     .catch(error => console.log(error,'Fail to retrieve cash out information'))
+// const cashOutAPIPersonal = {
+//     percents: 0.3,
+//     min: {
+//         amount: 0.5,
+//         currency: "EUR"
+//     }
 // }
 
-calPercent = (percent, value) => (percent * value/100).toFixed(2);
+calPercent = (percent=0, value=0) => (percent * value/100).toFixed(2);
 
-cashInCommission = (rules, amount)=> {
+const cashInCommission = (rules, amount)=> {
     let fee = calPercent(rules.percents, amount);
     if(fee > rules.max.amount) {
         return fee = rules.max.amount.toFixed(2);
@@ -77,7 +56,7 @@ cashInCommission = (rules, amount)=> {
     return fee;
 }
 
-cashOutCommissionLegal = (rules, amount)=> {
+const cashOutCommissionLegal = (rules, amount)=> {
     let fee = calPercent(rules.percents, amount);
     if(fee < rules.min.amount) {
         return fee = rules.min.amount;
@@ -91,7 +70,7 @@ const checkOutInformationDb = {
     
 }
 
-naturalUserCashOutInformation = (person, userCheckOutHistory) => {
+const naturalUserCashOutInformation = (person, userCheckOutHistory) => {
     const oneWeek = 7;
     // console.log(userCheckOutHistory[1])
     if(userCheckOutHistory[person.user_id]){
@@ -115,7 +94,7 @@ naturalUserCashOutInformation = (person, userCheckOutHistory) => {
 
 
 
-cashOutCommissionNatural = (rules, personInfo, person) => {
+const cashOutCommissionNatural = (rules, personInfo, person) => {
         //1.Check if personInfo.user+(person+id).amount is more than 1000 euro
         if(personInfo[person.user_id].amount > 1000) {
             if(!personInfo[person.user_id].limit) {
@@ -125,15 +104,31 @@ cashOutCommissionNatural = (rules, personInfo, person) => {
                 return calPercent(rules.percents, person.operation.amount);
             }
         }
-        return Number(0).toFixed(2);
+        return calPercent();
 }
 
 
-function main(val) {
+async function main(val) {
+
+    console.time('main');
+    const cashIn = await fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-in')
+    .then(response => response.json())
+    .catch(err => console.log(err));
+
+    const cashOutAPINatural = await fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-out/natural')
+    .then(response => response.json())
+    .catch(err => console.log(err));
+
+    const cashOutAPIPersonal = await fetch('http://private-38e18c-uzduotis.apiary-mock.com/config/cash-out/juridical')
+    .then(response => response.json())
+    .catch(err => console.log(err));
+
+    console.timeEnd('main');
+
      val.forEach(user=> {
         if(user.type == 'cash_in') {
            //calculate cash in commission
-            const fee = cashInCommission(cashInAPI, user.operation.amount);
+            const fee = cashInCommission(cashIn, user.operation.amount);
             console.log(fee); 
         } else {
             if(user.user_type == 'natural') {
@@ -151,6 +146,8 @@ function main(val) {
 }
 
 main(input);
+
+
 
 
 
