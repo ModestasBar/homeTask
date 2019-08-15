@@ -8,7 +8,7 @@ const refreshUserHistory = (date, amount, limit)=> {
     }
 }
 
-percents = (percent=0, value=0) => (percent * value/100).toFixed(2);
+percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
 const userInformation = (inputUser, checkOutHistory) => {
     const oneWeek = 7;
