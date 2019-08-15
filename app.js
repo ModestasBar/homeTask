@@ -5,14 +5,14 @@ Output:
     Single number according configuration API's.
 */
 const rules = require('./controller/rules');
-const jsonInput = require('./repository/data');
+const jsonFile = require('./components/data');
 const cashIn = require('./components/cashIn');
 const cashOut = require('./components/cashOut');
 
 async function main(url) {
 
 const checkOutHistory = {}; //User checkout history object
-const input = jsonInput.handleData(url); //Input file
+const input = jsonFile.handleData(url); //Input file
 
 //API requests for configuration
 const cashInAPI = await rules.handleCashInAPI();
