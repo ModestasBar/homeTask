@@ -10,7 +10,6 @@ const cashIn = require('./components/cashIn');
 const cashOut = require('./components/cashOut');
 
 async function main(url) {
-
 const checkOutHistory = {}; //User checkout history object
 const input = jsonFile.handleData(url); //Input file
 
