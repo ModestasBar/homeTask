@@ -33,7 +33,7 @@ test('Natural user total cash out amount exceed weekly limit, calculate commissi
 })
 
 describe('Cash out for legal users',()=> {
-    test('Fee is smaller then max fee', async ()=> {
+    test('Fee is smaller then mix fee', async ()=> {
         const amount = testUsers[0].operation.amount; //Percentage fee of 100 is less then min cash out fee
         const configurations = await rules.handleCashOutAPIPersonal();
         const minAmount = configurations.min.amount;
