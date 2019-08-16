@@ -1,6 +1,6 @@
 ## homeTask
 
-#Task for job interview
+  Task for job interview
 
 System controls:
 To star a program type - 'node app.js'.
