@@ -1,7 +1,9 @@
-# homeTask
+## homeTask
 
-Task for job interview
+#Task for job interview
 
-To star program type - node app.js
+System controls:
+To star a program type - 'node app.js'.
+To run tests run script - 'npm test.
 
-To run the tests type - npm test
+This project is built using node.js
