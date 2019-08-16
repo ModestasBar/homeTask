@@ -2,6 +2,6 @@
 
 Task for job interview
 
-System start type - 'node app.js', System tests run script - 'npm test'.
+To start system type - 'node app.js', To run tests type script - 'npm test'.
 
 This project is built using node.js
