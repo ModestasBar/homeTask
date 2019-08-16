@@ -7,6 +7,4 @@ const handleData = (url) => {
     return data;
 }
 
-module.exports = {
-    handleData
-}
+module.exports = {handleData}
