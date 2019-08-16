@@ -1,4 +1,4 @@
-percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
+const percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
 const commission = (rules, amount)=> {
     let fee = percents(rules.percents, amount);
@@ -9,5 +9,6 @@ const commission = (rules, amount)=> {
 }
 
 module.exports = {
-    commission
+    commission,
+    percents
 }
