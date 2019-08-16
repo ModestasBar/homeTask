@@ -8,28 +8,28 @@ const refreshUserHistory = (date, amount, limit)=> {
     }
 }
 
-percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
+const percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
-const userInformation = (inputUser, checkOutHistory) => {
+const userInformation = (inputUser, cashOutHistory) => {
     const oneWeek = 7;
     const amount = inputUser.operation.amount;
     const userId = inputUser.user_id
-    //Check if the user has checkout history
-    if(checkOutHistory[userId]){
-        const userInfo = checkOutHistory[userId];
-        const lastCheckOutAction = calcDate.subtract(new Date(inputUser.date), userInfo.date).toDays();
-    //If last checkout was been made in a range of 7 days - update user total checkout amount,
-    //if not - refresh user checkout history.
-         lastCheckOutAction < oneWeek ? checkOutHistory[userId].amount = userInfo.amount + amount :
-        checkOutHistory[userId] = refreshUserHistory(inputUser.date, amount, false);
+    //Check if the user has cash out history
+    if(cashOutHistory[userId]){
+        const userInfo = cashOutHistory[userId];
+        const lastCashOutAction = calcDate.subtract(new Date(inputUser.date), userInfo.date).toDays();
+    //If last cash out was been made in a range of 7 days - update user total cash out amount,
+    //if not - refresh user cash out history.
+         lastCashOutAction < oneWeek ? cashOutHistory[userId].amount = userInfo.amount + amount :
+         cashOutHistory[userId] = refreshUserHistory(inputUser.date, amount, false);
     } else {
-        //Create user checkout history
-        checkOutHistory[userId] = refreshUserHistory(inputUser.date, amount, false);
+        //Create user cash out history
+        cashOutHistory[userId] = refreshUserHistory(inputUser.date, amount, false);
     }
 }
 
 const commissionNatural = (rules, userInfo, person) => {
-    //If person is above weekly checkout limit - calculate commission according configuration,
+    //If person is above weekly cash out limit - calculate commission according configuration,
     //if not - no commissions fee.
         const weekLimit = rules.week_limit.amount;
         if(userInfo[person.user_id].amount > weekLimit) {
@@ -55,5 +55,7 @@ const commissionLegal = (rules, amount)=> {
 module.exports = {
     userInformation,
     commissionNatural,
-    commissionLegal
+    commissionLegal,
+    percents,
+    refreshUserHistory
 }
