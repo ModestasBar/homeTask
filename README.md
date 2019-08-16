@@ -2,6 +2,6 @@
 
 Task for job interview
 
-System controls: Star a program type - 'node app.js', run tests run script - 'npm test.
+Controls: System start type - 'node app.js', System tests run script - 'npm test.
 
 This project is built using node.js
