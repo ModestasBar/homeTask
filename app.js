@@ -38,7 +38,7 @@ const cashOutAPIPersonal = await rules.handleCashOutAPIPersonal();
     })
 }
 
-main('repository/input.json');
+main('data/input.json');
 
 
 
