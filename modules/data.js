@@ -1,10 +1,5 @@
 const fs = require('fs');
 
-const handleData = (url) => {
-    const rawData = fs.readFileSync(url);
-    const data = JSON.parse(rawData);
+const handleData = url => data = JSON.parse(fs.readFileSync(url));
 
-    return data;
-}
-
-module.exports = {handleData}
+module.exports = {handleData};
