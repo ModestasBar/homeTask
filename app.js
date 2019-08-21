@@ -10,7 +10,7 @@ const jsonFile = require('./modules/data');
 async function main(url) {
     const readUser = jsonFile.handleData(url);
     for(let i = 0; i < readUser.length; i++) {
-       await action.fee(readUser[i]);
+        console.log(await action.fee(readUser[i])); 
     };
 };
 

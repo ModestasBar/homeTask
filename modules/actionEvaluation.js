@@ -9,18 +9,18 @@ const fee = async user => {
         //Cash in commission calculation
         if(user.type == 'cash_in') {
             const cashInAPI = await rules.handleCashInAPI();
-            return console.log(cashIn.commission(cashInAPI, user.operation.amount));
+            return (cashIn.commission(cashInAPI, user.operation.amount));
         }
         //Cash out commissions fee when user is natural
         if(user.user_type == 'natural') {
             const cashOutAPINatural = await rules.handleCashOutAPINatural();
-            return console.log(naturalCashOut.commission(cashOutAPINatural, user));
+            return (naturalCashOut.commission(cashOutAPINatural, user));
         }
         //Cash out commissions fee when user is legal
         const cashOutAPIPersonal = await rules.handleCashOutAPIPersonal();
-        return console.log(legalCashOut.commission(cashOutAPIPersonal, user.operation.amount));
+        return (legalCashOut.commission(cashOutAPIPersonal, user.operation.amount));
         }       
-    return console.log(`Currency error`);
+    return (`Currency error`);
 }
 
 
