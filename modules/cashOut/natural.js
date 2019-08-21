@@ -33,15 +33,15 @@ const userInformation = (inputUser, cashOutHistory) => {
         //Create user cash out history
         cashOutHistory[userId] = refreshUserHistory(inputUser.date, amount, false);
     }
-}
+};
 
 const refreshUserHistory = (date, amount, limit) => {
     return {
         date : new Date(date),
         amount,
         limit
-    }
-}
+    };
+};
 
 const percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
