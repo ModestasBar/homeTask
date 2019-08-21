@@ -1,5 +1,7 @@
-## Task for job interview
+# Task for job interview
 
-To start system type - 'node app.js', To run tests type script - 'npm test'.
+## System control:
+#### System start type - 'node app.js',\n
+#### Run tests type script - 'npm test'.
 
 This project is built using node.js
