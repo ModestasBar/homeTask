@@ -4,49 +4,42 @@ Input:
 Output: 
     Single number according configuration API's.
 */
-const rules = require('./controller/rules');
+const commission = require('./modules/actionEvaluation');
 const jsonFile = require('./modules/data');
-const cashIn = require('./modules/cashIn');
-const cashOut = require('./modules/cashOut');
-
-
 
 async function main(url) {
-const acceptingCurrency = 'EUR';
-const inputFile = jsonFile.handleData(url);
-
-//API requests for configuration
-const cashInAPI = await rules.handleCashInAPI();
-const cashOutAPINatural = await rules.handleCashOutAPINatural();
-const cashOutAPIPersonal = await rules.handleCashOutAPIPersonal();
-
-//To track user cash out history
-// const cashOutHistory = {};
-
-inputFile.forEach(user=> {
-    if(user.operation.currency === acceptingCurrency){
-        //Cash in commission calculation
-        if(user.type == 'cash_in') {
-            return console.log(cashIn.commission(cashInAPI, user.operation.amount));
-        }
-        //Cash out commissions fee when user is natural
-        return user.user_type == 'natural' ? console.log(cashOut.commissionNatural(cashOutAPINatural, user)) : 
-        //Cash out commissions fee when user is legal
-        console.log(cashOut.commissionLegal(cashOutAPIPersonal, user.operation.amount));
-    }       
-    return console.log(`Currency error`);
-})
+    const readUser = jsonFile.handleData(url);
+    for(let i = 0; i < readUser.length; i++) {
+       await commission.fee(readUser[i]);
+    };
 };
+
 
 main('repository/input.json');
 
 
 
+// class UserData {
+//     constructor(user) {
+//         this.user = user;
+//         this.limit = false;
+//         this.checkOutHistory = [];
+//         this.test();
+//     };
 
 
+//     test() {
+//         console.log('aasfsdaf');
+//     }
+// }
 
-// const dateTest = require('date-and-time');
+// let user = new UserData();
 
-// console.log(dateTest.subtract(new Date('2016-09-19'), new Date('2019-09-18')).toDays());
+// console.log(user);
+
+
+// // const dateTest = require('date-and-time');
+
+// // console.log(dateTest.subtract(new Date('2016-09-19'), new Date('2019-09-18')).toDays());
 
 

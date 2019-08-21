@@ -8,16 +8,6 @@ const refreshUserHistory = (date, amount, limit)=> {
     }
 }
 
-class UserData {
-    constructor(user) {
-        this.user = user;
-        limit = false;
-    };
-
-    
-    
-}
-
 const percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
 const cashOutHistory = {};
@@ -49,7 +39,7 @@ const commissionNatural = (config, person) => {
         if(!cashOutHistory[person.user_id].limit) {
             cashOutHistory[person.user_id].limit = true;
             return  percents(config.percents, cashOutHistory[person.user_id].amount - weekLimit);
-        } 
+        }
         return percents(config.percents, person.operation.amount);
     }
     return percents();
