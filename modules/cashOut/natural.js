@@ -45,4 +45,9 @@ const refreshUserHistory = (date, amount, limit) => {
 
 const percents = (percent=0, value=0) => (percent * value/100 + 0.004).toFixed(2);
 
-module.exports = {commission};
+module.exports = {
+    commission,
+    userInformation,
+    percents,
+    refreshUserHistory
+};
