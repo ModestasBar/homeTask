@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "reverse-string": "0.0.6"
+    "reverse-string": "0.0.6",
+    "trigonometry-equations": "^2.0.1"
   }
 }
