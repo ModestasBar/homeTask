@@ -25,4 +25,60 @@ const reverseSentence = (input) => {
     return reversedWordSentence;
 };
 
+//Note: What if word in a brackets?
 console.log(reverseSentence('laba diena visiems kaip, laikotes'));
+//---------------------------------------------------------------------------------//
+//Triangle Categorisation
+//Given the numerical lengths of the 3 sides of a triangle, return the type of triangle formed by these 3 sides.
+
+const trigonometry = require('trigonometry-equations');
+
+const triangleBySides = (first, second, third) => {
+    return (first === second && second === third) && 'Equilateral' ||
+    (first === second || first === third || second === third) && 'Isosceles' ||
+    'Scalene';
+}
+
+const triangleByAngles = (angles) => {
+    const scale90 = 90;
+    const scale60 = 60;
+    if(angles.find((value) => value === scale90)) {
+        return 'Right';
+    } else if (angles.find((value) => value > scale90)) {
+        return 'Obtuse';
+    } else if (angles.every((value) => value === scale60)) {
+        return 'Equiangular';
+    } else {
+        return 'Acute';
+    }
+};
+
+const triangleCategorization = (first, second, third) => {
+        if(first + second <= third || first + third <= second || second + third <= first) {
+            return 'Invalid numerical lengths';
+        }
+        const unsolvedTriangle = {
+            sides: { 0: first, 1: second, 2: third}
+        };
+        const anglesCalc = [first, second, third].map((sideLength, sideIndex) => {
+            let angleToFind = {
+                findAngle: sideIndex
+            };
+            //cosineRule return an object which consist of properties 'angles' and 'sides'
+            //Extract angle value accessing angles
+            return Math.round(trigonometry.cosineRule(unsolvedTriangle, angleToFind).angles[sideIndex]);
+        });
+
+
+    return 'Classification of triangles by sides - ' + triangleBySides(first,second,third) + '\n'
+    + 'Classification of triangles by angles - ' + triangleByAngles(anglesCalc);
+}
+
+console.log(triangleCategorization(9,5,5));
+
+
+// console.log(triangleBySides(8, 8, 8));
+// console.log(triangleByAngles([61, 59, 60]));
+
+
+
