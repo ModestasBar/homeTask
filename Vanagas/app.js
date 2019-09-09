@@ -1,5 +1,6 @@
-/* Word Reversal
-For any given sentence, reverse the characters of each word in the sentence. */
+//---------------------------------------------------------------------------------//
+//2. Word Reversal
+//For any given sentence, reverse the characters of each word in the sentence 
 
 //Input string of sentence.
 //Output string with reversed words.
@@ -26,9 +27,9 @@ const reverseSentence = (input) => {
 };
 
 //Note: What if word in a brackets?
-console.log(reverseSentence('laba diena visiems kaip, laikotes'));
+// console.log(reverseSentence('laba diena visiems kaip, laikotes'));
 //---------------------------------------------------------------------------------//
-//Triangle Categorisation
+//1. Triangle Categorization
 //Given the numerical lengths of the 3 sides of a triangle, return the type of triangle formed by these 3 sides.
 
 const trigonometry = require('trigonometry-equations');
@@ -74,11 +75,95 @@ const triangleCategorization = (first, second, third) => {
     + 'Classification of triangles by angles - ' + triangleByAngles(anglesCalc);
 }
 
-console.log(triangleCategorization(9,5,5));
+// console.log(triangleCategorization(9,5,5));
+//---------------------------------------------------------------------------------//
+//3. Linked List Traversal
+//Given a singularly linked list of integers, return the 5th integer from the end of the list using the most efficient method
+
+//Step 1.
+// Create a class of linked list with method to add new data to it.
+//Create a method which return 5 parameter in linked list.
+
+class LinkedListNode {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    add(data) {
+        const newNode = new LinkedListNode(data);
+        if (this.head === null) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next !== null) {
+                current = current.next;
+            }
+            current.next = newNode;            
+        }
+    }
+
+    get5thIntegerFromEnd(linkedList) {
+        let tempNode = linkedList.head;
+        //Get length of linkedList
+        let counter = 0;
+        while (tempNode !== null) {
+            tempNode = tempNode.next;
+            counter++;         
+        }
+        //Calculate the length for 5th element from back;
+        let lengthToTravel = counter - 5;
+        let i = 0;
+        let node = linkedList.head;
+        while ((data !== null) && (i < lengthToTravel)) {
+            node = node.next;
+            i++;
+        };
+        return node !== null ? node.data : undefined;
+    }
+
+}
+
+const get5thIntegerFromEnd = (linkedList) => {
+    let tempNode = linkedList.head;
+    //Get length of linkedList
+    let counter = 0;
+    while (tempNode !== null) {
+        tempNode = tempNode.next;
+        counter++;         
+    }
+    //Calculate the length for 5th element from back;
+    let lengthToTravel = counter - 5;
+    if(lengthToTravel >=0) {
+        let i = 0;
+        let node = linkedList.head;
+        while ((node !== null) && (i < lengthToTravel)) {
+            node = node.next;
+            i++;
+            console.log(i);
+        };
+        return node.data;
+    }
+    return undefined;
+}
 
 
-// console.log(triangleBySides(8, 8, 8));
-// console.log(triangleByAngles([61, 59, 60]));
+const list = new LinkedList();
+list.add("red");
+list.add("orange");
+list.add("yellow");
+list.add("blue");
+list.add("blue");
+
+
+console.log(get5thIntegerFromEnd(list));
+
 
 
 
