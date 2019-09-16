@@ -15,5 +15,12 @@ async function main(url) {
 };
 
 
-main('repository/input.json');
+// main('repository/input.json');
 
+const arr = [];
+
+for(let i = 0; i < 10000000; i++) {
+    arr.push(i);
+};
+
+console.log(arr);
