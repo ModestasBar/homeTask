@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Header from '../Component/Header';
 import Table from '../Component/Table';
+import LoadingScreen from '../Component/LoadingScreen';
 
-const Content = ({ dummyData, isLoading, handleSort }) => {
+const Content = ({ dummyData, isLoading, handleSort, requiredData }) => {
     let[currentPage, setCurrentPage] = useState(1);
     let[entriesPerPage] = useState(10);
     let[paginationCheck, setPaginationCheck] = useState(true);
@@ -28,7 +29,7 @@ const Content = ({ dummyData, isLoading, handleSort }) => {
 
     if(!paginationCheck) pageEntries = dummyData;
 
-    return isLoading ? <h1>{'Loading...'}</h1>
+    return isLoading ? <LoadingScreen currentData={dummyData} requiredData={requiredData} />
     : (
     <div>
         <Header 

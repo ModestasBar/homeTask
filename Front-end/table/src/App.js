@@ -6,7 +6,7 @@ import Content from './Container/Content';
 
 const App = () => {
   const dataAPI = 'http://dummy.restapiexample.com/api/v1/employees';
-  const entries = 5000;
+  const requiredData = 5000;
 
   let[dummyData, setDummyData] = useState([]);
   let[isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ const App = () => {
      .then(response => response.json())
      .then(data => {
       setDummyData(dummyData = dummyData.concat(data));
-       if(dummyData.length <= entries) {
+       if(dummyData.length <= requiredData) {
          console.log(dummyData);
          return handleDummyData();
        }
@@ -43,6 +43,7 @@ const App = () => {
       dummyData={orderBy(dummyData, sortColumn, sortOrder)} 
       isLoading={isLoading} 
       handleSort={handleSort}
+      requiredData={requiredData}
     />
   );
 }
