@@ -22,7 +22,6 @@ const App = () => {
      .then(data => {
       setDummyData(dummyData = dummyData.concat(data));
        if(dummyData.length <= requiredData) {
-         console.log(dummyData);
          return handleDummyData();
        }
        setIsLoading(!isLoading);
